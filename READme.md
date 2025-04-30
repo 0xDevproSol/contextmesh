@@ -1,11 +1,19 @@
-# ContextMesh
+# ContextMesh Backend
 
-Visual, no-code builder for MCP workflows on Solana.
-- Manifest Studio: drag-and-drop canvas
-- Marketplace: one-click publish & import
-- Connectors: on-chain data, HTTP APIs, custom tools
+Backend server for ContextMesh MCP platform.  
+Provides REST API for manifests, validation, simulation, and publishing,  
+plus an MCP JSON-RPC server.
 
-## Quick Start
-1. Clone this repo  
-2. `cd manifest-studio && npm install && npm run dev`  
-3. Open http://localhost:3000  
+## Prerequisites
+
+- Node.js >= 18
+- MongoDB server
+- Solana credentials (optional for marketplace)
+
+## Setup
+
+1. Clone the repo  
+2. Copy `.env.example` to `.env` and fill required vars  
+3. Install dependencies  
+   ```bash
+   npm install
