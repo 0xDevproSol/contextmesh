@@ -1,3 +1,5 @@
+// src/index.ts
+
 import express from 'express';
 import http from 'http';
 import { json } from 'body-parser';
@@ -11,12 +13,17 @@ import publishRouter from './controllers/publishController';
 import authMiddleware from './middleware/authMiddleware';
 import errorHandler from './middleware/errorHandler';
 import { startMcpServer } from './utils/mcpServer';
+import { initDb } from './utils/db';  // ← new import
 
 /**
  * Entry point for the ContextMesh backend server.
- * Initializes HTTP API and MCP JSON-RPC server.
+ * Initializes DB, HTTP API and MCP JSON-RPC server.
  */
 async function main() {
+  // 1) Initialize MongoDB connection
+  await initDb();
+
+  // 2) Create Express app
   const app = express();
 
   // Parse incoming JSON bodies
@@ -58,3 +65,4 @@ main().catch(err => {
   logger.error('Failed to start ContextMesh server', err);
   process.exit(1);
 });
+
