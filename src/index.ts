@@ -12,15 +12,15 @@ import simulationRouter from './controllers/simulationController';
 import publishRouter from './controllers/publishController';
 import authMiddleware from './middleware/authMiddleware';
 import errorHandler from './middleware/errorHandler';
-import { startMcpServer } from './utils/mcpServer';
-import { initDb } from './utils/db';  // ← new import
+import { initMcpServer } from './utils/mcpServer';
+import { initDb } from './utils/db';
 
 /**
- * Entry point for the ContextMesh backend server.
- * Initializes DB, HTTP API and MCP JSON-RPC server.
+ * Entry point for the ContextMesh backend.
+ * Initializes database, HTTP API, and MCP JSON-RPC server.
  */
 async function main() {
-  // 1) Initialize MongoDB connection
+  // 1) Connect to MongoDB
   await initDb();
 
   // 2) Create Express app
@@ -47,17 +47,15 @@ async function main() {
   // Global error handler
   app.use(errorHandler);
 
-  // Create HTTP server
+  // 3) Start HTTP server
   const server = http.createServer(app);
-
-  // Start listening for API requests
-  server.listen(config.httpPort, () => {
-    logger.info(`HTTP server listening on port ${config.httpPort}`);
+  server.listen(config.server.httpPort, () => {
+    logger.info(`HTTP server listening on port ${config.server.httpPort}`);
   });
 
-  // Initialize MCP (JSON-RPC) server on the same HTTP server
-  await startMcpServer(server, config.mcpPath);
-  logger.info('MCP JSON-RPC server started');
+  // 4) Start MCP JSON-RPC server
+  await initMcpServer({ port: config.server.mcpPort });
+  logger.info(`MCP JSON-RPC server started on port ${config.server.mcpPort}`);
 }
 
 // Bootstrap and handle startup errors
@@ -65,4 +63,3 @@ main().catch(err => {
   logger.error('Failed to start ContextMesh server', err);
   process.exit(1);
 });
-
